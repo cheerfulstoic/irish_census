@@ -1,0 +1,3 @@
+<%= link_to resident.full_name, irish_census_resident_path(resident) %> (
+<%= %w{age_string occupation relation_to_head marital_status years_married_string children_string}.map { |field| resident.send(field) }.reject(&:blank?).join(' / ') %>
+)

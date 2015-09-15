@@ -1,0 +1,14 @@
+- @geo_object.ancestors.each do |ancestor|
+  = link_to ancestor.name, ancestor
+  | &gt;
+
+h1 = @geo_object.name
+
+.list-group
+  - @geo_object.geo_children.group_by {|child| child.try(:census_year) }.sort_by(&:first).each do |year, children|
+    h2 = year
+    - children.sort.each do |child|
+      = link_to child, class: 'list-group-item' do
+        = child.name
+        = render partial: 'child_info', locals: {child: child}
+

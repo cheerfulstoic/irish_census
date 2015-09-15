@@ -1,0 +1,29 @@
+// Place all the styles related to the irish_census controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+dl {
+  dt {
+    display: inline-block;
+    float: left;
+    width: 200px;
+    padding-bottom: 0.2em;
+  }
+  dd {
+    padding-bottom: 0.2em;
+  }
+}
+
+a.disabled {
+  text-decoration: none;
+  color: black;
+}
+
+.found-all {
+  color: green;
+}
+
+.found-some {
+  color: #FFED4B;
+}
+

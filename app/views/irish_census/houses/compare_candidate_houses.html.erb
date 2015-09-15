@@ -1,0 +1,11 @@
+<h1>
+  <%= @house.townland_street.ded.county.name %> /
+  <%= @house.townland_street.ded.name %> /
+  <%= @house.townland_street.name %> /
+  <%= link_to "House ##{@house.house_number}", irish_census_house_path(@house) %>
+</h1>
+
+<% @candidate_houses.each do |candidate_house, count| %>
+  <%= render partial: 'comparison', locals: {house1: @house, house2: candidate_house} %>
+<% end %>
+

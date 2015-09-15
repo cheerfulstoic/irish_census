@@ -1,0 +1,36 @@
+h1
+  = @resident.surname
+  | , 
+  = @resident.forename
+
+h2 Details
+dl.dl-horizontal
+  - Neo::Resident.attribute_names.each do |attribute_name|
+    dt = attribute_name.humanize
+    dd
+      = @resident.send(attribute_name)
+      | &nbsp;
+
+= irish_graveyards_link 'Irish Graveyards', firstname: @resident.forename, lastname: @resident.surname
+
+h2 Residence
+= @resident.residence.townland_street.ded.county.name
+|  / 
+= @resident.residence.townland_street.ded.name
+|  / 
+= @resident.residence.townland_street.name
+|  / 
+= link_to '#' + @resident.residence.house_number, irish_census_house_path(@resident.residence)
+
+.
+  = irish_census_link 'Irish Census Page', @resident.residence
+
+- if @resident.identified_as
+  h2 Identified as:
+  li = render partial: @resident.identified_as
+
+h2 Potentially same person
+ol
+  # @resident.similarity_candidates.sort_by {|candidate| @resident.similarity_to(candidate) }.reverse[0,5].each do |candidate|
+    li #= render partial: candidate
+  # end

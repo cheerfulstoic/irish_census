@@ -1,0 +1,26 @@
+h1
+  = @house.townland_street.ded.county.name
+  |  / 
+  = link_to @house.townland_street.ded.name, @house.townland_street.ded
+  |  / 
+  = link_to @house.townland_street.name, @house.townland_street
+  |  / #
+  = @house.house_number
+
+h2
+  | Census Year:
+  = @house.census_year
+h2 Residents:
+
+ul.list-group
+  - @house.residents.sort_by {|r| r.age || 0 }.reverse.each do |resident|
+    li.list-group-item = render partial: resident
+
+.row
+  = link_to 'Find similar houses', {action: :compare_candidate_houses, census_id: @house.census_id}, class: 'btn btn-primary'
+
+  = irish_census_link 'Irish Census Page', @house, class: 'btn btn-primary'
+
+.row
+  input#compare-input.form-control type="text"
+  button#compare.btn.btn-primary data-house-id="#{@house.id}" Compare

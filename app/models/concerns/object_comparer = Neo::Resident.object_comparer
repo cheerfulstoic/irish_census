@@ -1,0 +1,5 @@
+object_comparer = Neo::Resident.object_comparer
+
+pairs = Neo::Resident.all.limit(20).map {|r| r.similarity_candidates.map {|rc| [r, rc] } }.flatten(1)
+
+pairs.map {|r1, r2| object_comparer.classify_hash(r1, r2) }

@@ -1,0 +1,4 @@
+div.list-group
+  - @counties.each do |county|
+    = link_to county.name, {action: :show, id: county}, class: 'list-group-item'
+

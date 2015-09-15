@@ -1,0 +1,16 @@
+|  - 
+- residents = child.residents.to_a
+= residents.count_by(&:surname).sort_by(&:last).reverse.map { |surname, count| "#{count} x #{surname}" }.to_sentence
+
+- identified_count = residents.count {|r| !!r.identified_as }
+
+- count_class = case identified_count
+- when residents.size
+  - 'found-all'
+- when 0
+  - 'found-none'
+- else
+  - 'found-some'
+
+span class="#{count_class}"  (#{identified_count} identified_as)
+

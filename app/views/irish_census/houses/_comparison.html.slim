@@ -1,0 +1,28 @@
+table.table.table-striped
+  tr
+    th &nbsp;
+    th &nbsp;
+    th
+      = house2.townland_street.ded.county.name
+      |  / 
+      = house2.townland_street.ded.name
+      |  / 
+      = house2.townland_street.name
+      |  / 
+      = link_to "House ##{house2.house_number}", irish_census_house_path(house2)
+
+  tr
+    th = house1.census_year
+    th &nbsp;
+    th = house2.census_year
+
+  - house1.match_residents(house2).each do |resident1, resident2|
+    tr
+      td = render partial: resident1 if resident1
+      th
+        - if resident1 && resident2
+          - same_identity = resident1.identified_as?(resident2)
+          = link_to 'Same', '#', class: "same-resident #{same_identity ? 'disabled' : ''}", data: {source_id: resident1.id, target_id: resident2.id, same_identity: same_identity}
+          = link_to 'Clear', '#', class: 'clear-resident', data: {source_id: resident1.id, target_id: resident2.id}
+
+      td = render partial: resident2 if resident2

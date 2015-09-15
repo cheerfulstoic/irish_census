@@ -1,0 +1,68 @@
+
+MERGE (co:County {name: '<%= @county_name.gsub("'", "\\'") %>'});
+
+<% @hierarchy_files.each do |hierarchy_file| %>
+  USING PERIODIC COMMIT 10000
+  LOAD CSV FROM 'file://<%= hierarchy_file.path %>' AS csvLine
+  WITH
+    csvLine[0] AS ded_data,
+    csvLine[1] AS ded_encoded_data,
+    csvLine[2] AS townland_street_data,
+    csvLine[3] AS townland_street_encoded_data,
+    toInt(csvLine[4]) AS census_id_data,
+    csvLine[5] AS house_number_data,
+    csvLine[6] AS original_census_path_data
+
+
+  MATCH (co:County {name: '<%= @county_name.gsub("'", "\\'") %>'})
+  MERGE co<-[:IN]-(ded:DED {name: ded_data})                        ON CREATE SET ded.encoded_name = ded_encoded_data
+  MERGE ded<-[:IN]-(ts:TownlandStreet {name: townland_street_data})  ON CREATE SET ts.encoded_name = townland_street_encoded_data
+  CREATE ts<-[:IN]-(house:House {census_year: <%= @census_year %>, census_id: census_id_data, house_number: house_number_data, original_census_path: original_census_path_data})
+  ;
+<% end %>
+
+
+<% @resident_files.each do |residents_file| %>
+  LOAD CSV FROM 'file://<%= residents_file.path %>' AS csvLine
+  WITH
+    toInt(csvLine[0]) AS census_id_data,
+
+    csvLine[1] AS id_data,
+    csvLine[2] AS surname_data,
+    csvLine[3] AS forename_data,
+    toInt(csvLine[4]) AS age_data,
+    csvLine[5] AS sex_data,
+    csvLine[6] AS relation_to_head_data,
+    csvLine[7] AS religion_data,
+    csvLine[8] AS birthplace_data,
+    csvLine[9] AS occupation_data,
+    csvLine[10] AS literacy_data,
+    csvLine[11] AS irish_language_data,
+    csvLine[12] AS marital_status_data,
+    csvLine[13] AS specified_illness_data,
+    toInt(csvLine[14]) AS years_married_data,
+    toInt(csvLine[15]) AS children_born_data,
+    toInt(csvLine[16]) AS children_living_data
+
+  MATCH (house:House {census_id: census_id_data, census_year: <%= @census_year %>}) USING INDEX house:House(census_id)
+  CREATE (r:Resident {
+    id: id_data,
+    census_year: <%= @census_year %>,
+    surname: surname_data,
+    forename: forename_data,
+    age: age_data,
+    sex: sex_data,
+    relation_to_head: relation_to_head_data,
+    religion: religion_data,
+    birthplace: birthplace_data,
+    occupation: occupation_data,
+    literacy: literacy_data,
+    irish_language: irish_language_data,
+    marital_status: marital_status_data,
+    specified_illness: specified_illness_data,
+    years_married: years_married_data,
+    children_born: children_born_data,
+    children_living: children_living_data
+  })-[:LIVES_IN]->house;
+<% end %>
+
